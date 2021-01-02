@@ -10,7 +10,7 @@ const headerWithLogo = {
   headerLeft: (props) => <View {...props} />,
   headerRight: () => <View />,
   headerTitleAlign: 'center',
-  headerTitle: () => <View height={5.3} width={9.5} />,
+  headerTitle: () => <View height={1} width={9.5} />,
   headerStyle: {
     backgroundColor: 'white',
     shadowOpacity: 0,
@@ -61,8 +61,8 @@ function ApiStackScreen() {
 export default function HomeTabNavigator() {
   return (
     <Tab.Navigator screenOptions={ScreenOptions} tabBarOptions={TabBarOptions}>
-      <Tab.Screen name="MyMovies" component={HomeStackScreen} />
-      <Tab.Screen name="ApiMovies" component={ApiStackScreen} />
+      <Tab.Screen name="ApiMovies" component={HomeStackScreen} />
+      <Tab.Screen name="MyMovies" component={ApiStackScreen} />
     </Tab.Navigator>
   );
 }

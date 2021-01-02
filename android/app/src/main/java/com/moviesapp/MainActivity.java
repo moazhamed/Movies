@@ -1,5 +1,6 @@
 package com.moviesapp;
 
+import com.reactcommunity.rndatetimepicker.RNDateTimePickerPackage;
 import com.facebook.react.ReactActivity;
 
 public class MainActivity extends ReactActivity {
