@@ -7,18 +7,19 @@ import {
 
 const localImage = require('../../../assets/placeholder.png');
 
-const MovieItem = ({title, overView, date, poster}) => {
+const MovieItem = ({title, overView, date, poster, uri}) => {
   let imagePath = `https://image.tmdb.org/t/p/w500${poster}`;
-
   return (
     <View style={styles.mainContainer}>
       <Text style={styles.movieTitle}>{title}</Text>
       <Text style={styles.overView}>{overView}</Text>
       <Image
         style={styles.moviePoster}
-        source={poster ? {uri: imagePath} : localImage}
+        source={poster ? {uri: imagePath} : uri ? {uri: uri} : localImage}
       />
-      <Text style={styles.moviedate}>{'Release date:  ' + date}</Text>
+      <Text style={styles.moviedate}>
+        {date ? 'Release date:  ' + date : ''}
+      </Text>
     </View>
   );
 };

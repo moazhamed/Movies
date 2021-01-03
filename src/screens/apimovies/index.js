@@ -1,5 +1,5 @@
 import React, {useLayoutEffect} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, ScrollView} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -8,38 +8,63 @@ import {useState} from 'react/cjs/react.development';
 import CustomTextInput from '../../components/atoms/CustomTextInput';
 import DateTimePicker from '../../components/molcules/DateTimePicker';
 import Button from '../../components/atoms/Button';
+import {
+  ImagePicker,
+  launchCamera,
+  launchImageLibrary,
+} from 'react-native-image-picker/src';
+import MovieItem from '../../components/molcules/MovieItem';
 
-const MyMovies = () => {
+const MyMovies = ({navigation}) => {
+  let [movieTitle, setMovieTitle] = useState();
+  let [movieOverview, setMovieOverview] = useState();
   let [releaseDate, setReleaseDate] = useState('');
+  let [movieUri, setMovieUri] = useState();
+
+  let pickImage = () => {
+    launchImageLibrary({mediaType: 'photo'}, (response) => {
+      console.log('response', response.uri);
+      setMovieUri(response.uri);
+    });
+  };
+
+  let addMovieToMoviesList = () => {
+    let newMoview = {
+      title: movieTitle,
+      overView: movieOverview,
+      date: releaseDate,
+      uri: movieUri,
+    };
+  };
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.ScreenTitle}>Add New Movie</Text>
-      <View style={styles.TextInputContainer}>
-        <CustomTextInput
-          height="7%"
-          width={'84.4%'}
-          placeholder={'Movie Title'}
-          placeholderTextColor={'black'}
-          onChange={(text) => {
-            // setPasswordError(false);
-            // setEmail(text);
-          }}
-        />
-      </View>
-      <View style={styles.TextInputContainer}>
-        <CustomTextInput
-          height="7%"
-          width={'84.4%'}
-          placeholder={'Movie Overview'}
-          placeholderTextColor={'black'}
-          onChange={(text) => {
-            // setPasswordError(false);
-            // setEmail(text);
-          }}
-        />
-      </View>
-      <View style={styles.TextInputContainer}>
-        {/* <DateTimePicker
+    <ScrollView style={{backgroundColor: 'white'}}>
+      <View style={styles.container}>
+        <Text style={styles.ScreenTitle}>Add New Movie</Text>
+        <View style={styles.TextInputContainer}>
+          <CustomTextInput
+            height="7%"
+            width={'84.4%'}
+            placeholder={'Movie Title'}
+            placeholderTextColor={'black'}
+            onChange={(text) => {
+              setMovieTitle(text);
+            }}
+          />
+        </View>
+        <View style={styles.TextInputContainer}>
+          <CustomTextInput
+            height="7%"
+            width={'84.4%'}
+            placeholder={'Movie Overview'}
+            placeholderTextColor={'black'}
+            onChange={(text) => {
+              setMovieOverview(text);
+            }}
+          />
+        </View>
+        <View style={styles.TextInputContainer}>
+          {/* <DateTimePicker
           width="32.5%"
           customTextInputProps={{
             value: releaseDate ? releaseDate : 'Release Date',
@@ -49,32 +74,45 @@ const MyMovies = () => {
           onChangeDate={setReleaseDate}
           pickerMode="time"
         /> */}
-        <CustomTextInput
-          height="7%"
-          width={'84.4%'}
-          placeholder={'Movie Date'}
-          placeholderTextColor={'black'}
-          onChange={(text) => {
-            // setPasswordError(false);
-            // setEmail(text);
-          }}
-        />
-
-        <Button
-          buttonText={'Choose Poster'}
-          onPress={() => {
-            // onChange(nonCollidingMultiSliderValue);
-            // resetVisbility();
-          }}
-          height={'7%'}
-          width={'84.4%'}
-          backgroundColor={'grey'}
-          marginTop={'6.7%'}
-          textFontSize={'1'}
-          textColor={'white'}
-        />
+          <CustomTextInput
+            height="7%"
+            width={'84.4%'}
+            placeholder={'Movie Date'}
+            placeholderTextColor={'black'}
+            onChange={(text) => {
+              setReleaseDate(text);
+            }}
+          />
+          <Button
+            buttonText={'Choose Poster'}
+            onPress={pickImage}
+            height={'7%'}
+            width={'84.4%'}
+            backgroundColor={'grey'}
+            marginTop={'1.7%'}
+            textFontSize={'1'}
+            textColor={'white'}
+          />
+        </View>
+        <MovieItem
+          title={movieTitle}
+          overView={movieOverview}
+          date={releaseDate}
+          uri={movieUri}></MovieItem>
       </View>
-    </View>
+      <Button
+        buttonText={'Add Movie'}
+        onPress={() => {
+          addMovieToMoviesList;
+        }}
+        height={'7%'}
+        width={'84.4%'}
+        backgroundColor={'red'}
+        marginTop={'1.7%'}
+        textFontSize={'1'}
+        textColor={'white'}
+      />
+    </ScrollView>
   );
 };
 
@@ -90,7 +128,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   TextInputContainer: {
-    marginTop: hp('2.8%'),
+    marginTop: hp('0.8%'),
     justifyContent: 'center',
     alignItems: 'center',
   },
