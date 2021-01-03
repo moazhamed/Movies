@@ -1,68 +1,55 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, FlatList} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
-import Axios from 'axios';
-import routes from '../../utils/routes';
-import {useState} from 'react';
 import MovieItem from '../../components/molcules/MovieItem';
-const MyMoviesList = () => {
-  let [movies, setMovies] = useState();
-  let [page, setPage] = useState(1);
-  let [refreshingMovies, setRefreshingMovies] = useState(false);
+import Button from '../../components/atoms/Button';
+
+const MyMoviesList = ({navigation, route}) => {
+  let movie = route?.params;
+
+  let [myMovies, setMyMovies] = useState([]);
 
   useEffect(() => {
-    getMovies();
-  }, []);
+    if (movie) {
+      setMyMovies(myMovies.concat(movie));
+    }
+  }, [route]);
 
-  let refreshMovies = () => {
-    setRefreshingMovies(true);
-    getMovies();
-  };
-
-  let onMoviesEndReached = () => {
-    console.log('end reached');
-    setRefreshingMovies(true);
-    setPage(page + 1);
-    getMovies();
-  };
-
-  let getMovies = () => {
-    Axios.get(routes.moviesController.getMovies(page))
-      .then((response) => {
-        setRefreshingMovies(false);
-        console.log('response', response);
-        setMovies(response.data.results);
-      })
-      .catch((error) => {
-        console.log('error', error.response);
-      });
+  let goToAddMovie = () => {
+    navigation.navigate('ApiMovies');
   };
   return (
     <View style={styles.container}>
       <FlatList
-        onRefresh={refreshMovies}
-        refreshing={refreshingMovies}
-        data={movies}
-        extraData={movies}
+        data={myMovies}
         renderItem={({item, index}) => (
           <MovieItem
-            title={item.title}
-            overView={item.overview}
-            date={item.release_date}
-            poster={item.poster_path}></MovieItem>
+            title={item?.movie?.title}
+            overView={item?.movie?.overView}
+            date={item?.movie?.date}
+            uri={item?.movie?.uri}></MovieItem>
         )}
-        keyExtractor={(item, index) => `${item.id}` + index}
+        keyExtractor={(item, index) => (item ? `${item?.movie?.id}` : null)}
         showsVerticalScrollIndicator={false}
-        onEndReached={({distanceFromEnd}) => {
-          if (distanceFromEnd < 1) {
-            onMoviesEndReached();
-          }
-        }}
+        ListEmptyComponent={() => (
+          <View style={styles.emptyList}>
+            <Text>List is empty , add new item</Text>
+          </View>
+        )}
         ItemSeparatorComponent={() => <View style={styles.separator} />}
-        onEndReachedThreshold={0.01}
+      />
+      <Button
+        buttonText={'Add Movie'}
+        onPress={goToAddMovie}
+        height={'7%'}
+        width={'84.4%'}
+        backgroundColor={'red'}
+        marginTop={'1.7%'}
+        textFontSize={'1'}
+        textColor={'white'}
       />
     </View>
   );
@@ -75,6 +62,11 @@ const styles = StyleSheet.create({
   },
   separator: {
     height: hp('2%'),
+  },
+  emptyList: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: hp('30%'),
   },
 });
 

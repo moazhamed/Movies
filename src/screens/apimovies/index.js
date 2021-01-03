@@ -8,12 +8,7 @@ import {useState} from 'react/cjs/react.development';
 import CustomTextInput from '../../components/atoms/CustomTextInput';
 import DateTimePicker from '../../components/molcules/DateTimePicker';
 import Button from '../../components/atoms/Button';
-import {
-  ImagePicker,
-  launchCamera,
-  launchImageLibrary,
-} from 'react-native-image-picker/src';
-import MovieItem from '../../components/molcules/MovieItem';
+import {launchImageLibrary} from 'react-native-image-picker/src';
 
 const MyMovies = ({navigation}) => {
   let [movieTitle, setMovieTitle] = useState();
@@ -29,12 +24,15 @@ const MyMovies = ({navigation}) => {
   };
 
   let addMovieToMoviesList = () => {
-    let newMoview = {
+    let newMovie = {
       title: movieTitle,
       overView: movieOverview,
       date: releaseDate,
       uri: movieUri,
+      id: Math.random().toString(36).substr(2, 9),
     };
+
+    navigation.navigate('MyMoviesList', {movie: newMovie});
   };
 
   return (
@@ -64,16 +62,6 @@ const MyMovies = ({navigation}) => {
           />
         </View>
         <View style={styles.TextInputContainer}>
-          {/* <DateTimePicker
-          width="32.5%"
-          customTextInputProps={{
-            value: releaseDate ? releaseDate : 'Release Date',
-            styles: {...styles.Textinput},
-          }}
-          IosConfrimButtonText={'Continue'}
-          onChangeDate={setReleaseDate}
-          pickerMode="time"
-        /> */}
           <CustomTextInput
             height="7%"
             width={'84.4%'}
@@ -94,17 +82,10 @@ const MyMovies = ({navigation}) => {
             textColor={'white'}
           />
         </View>
-        <MovieItem
-          title={movieTitle}
-          overView={movieOverview}
-          date={releaseDate}
-          uri={movieUri}></MovieItem>
       </View>
       <Button
         buttonText={'Add Movie'}
-        onPress={() => {
-          addMovieToMoviesList;
-        }}
+        onPress={addMovieToMoviesList}
         height={'7%'}
         width={'84.4%'}
         backgroundColor={'red'}

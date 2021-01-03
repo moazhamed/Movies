@@ -1,9 +1,10 @@
 import * as React from 'react';
-import {View} from 'react-native';
+import {RecyclerViewBackedScrollView, View} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createStackNavigator} from '@react-navigation/stack';
 import Movies from '../screens/movies';
 import ApiMovies from '../screens/apimovies';
+import MyMoviesList from '../screens/mymovieslsit';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const headerWithLogo = {
@@ -19,12 +20,16 @@ const headerWithLogo = {
 };
 
 const TabBarOptions = {
-  labelStyle: {fontSize: 15, textAlign: 'center', marginBottom: 15},
+  labelStyle: {fontSize: 15, textAlign: 'center', marginBottom: 3},
 };
 
-const ScreenOptions = () => ({
-  tabBarIcon: () => {
-    <Icon name={'heart'} size={16} color={'green'} />;
+const ScreenOptions = ({route}) => ({
+  tabBarIcon: ({color}) => {
+    if (route.name === 'ApiMovies') {
+      return <Icon name="tune-vertical" size={22} color={color} />;
+    } else if (route.name === 'MyMovies') {
+      return <Icon name="home" size={22} color={color} />;
+    }
   },
 });
 
@@ -49,6 +54,11 @@ function HomeStackScreen() {
 function ApiStackScreen() {
   return (
     <ApiMoviesStack.Navigator>
+      <MoviesStack.Screen
+        name="MyMoviesList"
+        component={MyMoviesList}
+        options={headerWithLogo}
+      />
       <ApiMoviesStack.Screen
         name="ApiMovies"
         component={ApiMovies}
